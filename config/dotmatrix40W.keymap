@@ -679,7 +679,7 @@
             bindings = <
                 MAC_QAZ40_BASE_LEFT_TOP                 MAC_QAZ40_BASE_RIGHT_TOP
                 MAC_QAZ40_BASE_LEFT_MIDDLE              MAC_QAZ40_BASE_RIGHT_MIDDLE
-                MAC_QAZ40_BASE_LEFT_BOTTOM              MAC_QAZ40_BASE_RIGHT_BOTTOM
+                MAC_QAZ40_BASE_LEFT_BOTTOM              &mkp LCLK  MAC_QAZ_BASE_RIGHT_BOTTOM
                 &none  &none  MAC_QAZ_BASE_LEFT_THUMBS  MAC_QAZ_BASE_RIGHT_THUMBS  &none  &none
             >;
         };
@@ -726,7 +726,7 @@
             bindings = <
                 WIN_QAZ40_BASE_LEFT_TOP                 WIN_QAZ40_BASE_RIGHT_TOP
                 WIN_QAZ40_BASE_LEFT_MIDDLE              WIN_QAZ40_BASE_RIGHT_MIDDLE
-                WIN_QAZ40_BASE_LEFT_BOTTOM              WIN_QAZ40_BASE_RIGHT_BOTTOM
+                WIN_QAZ40_BASE_LEFT_BOTTOM              &mkp LCLK  WIN_QAZ_BASE_RIGHT_BOTTOM
                 &none  &none  WIN_QAZ_BASE_LEFT_THUMBS  WIN_QAZ_BASE_RIGHT_THUMBS  &none  &none
             >;
         };
