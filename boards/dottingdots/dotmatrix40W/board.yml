@@ -1,6 +1,6 @@
 board:
   name: dotmatrix40W
-  vendor: custom
+  vendor: dottingdots
   socs:
     - name: nrf52840
       variants:
