@@ -771,7 +771,6 @@
                 BT_SEL_QAZ  &none  &none  MAC_QAZ40_ADJUST_RIGHT_TOP
                 QAZ40_NONE                MAC_QAZ40_ADJUST_RIGHT_MIDDLE
                 QAZ40_NONE                QAZ40_NONE
-                QAZ40_NONE                QAZ40_NONE
                 QAZ_NONE                  &bt BT_CLR  &bt BT_CLR_ALL  &none  &none  &bootloader
             >;
         };
