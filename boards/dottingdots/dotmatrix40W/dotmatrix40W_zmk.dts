@@ -1,0 +1,9 @@
+/*
+ * Copyright (c) 2021 Nick Winans
+ * Copyright (c) 2024
+ * Copyright 2026 Tano Karbou (github: karbou12 / X: @karbou_12)
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include "dotmatrix40W.dts"
