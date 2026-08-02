@@ -1,8 +1,6 @@
 # Copyright (c) 2021 Nick Winans
 # SPDX-License-Identifier: MIT
 
-CONFIG_BOARD_DOTMATRIX40W=y
-
 # Enable MPU
 CONFIG_ARM_MPU=y
 
