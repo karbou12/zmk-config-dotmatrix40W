@@ -12,7 +12,7 @@
 #include <dt-bindings/zmk/keys.h>
 
 #define ZMK_POINTING_DEFAULT_MOVE_VAL 1500
-#define ZMK_POINTING_DEFAULT_SCRL_VAL 20
+#define ZMK_POINTING_DEFAULT_SCRL_VAL 50
 
 #include <dt-bindings/zmk/pointing.h>
 #include <input/processors.dtsi>
@@ -20,6 +20,7 @@
 #include <zephyr/dt-bindings/input/input-event-codes.h>
 #include <zmk-input-inertia/input/processor/input_inertia.dtsi>
 #include "us_keymap.h"
+#include "us_encoder.h"
 
 // ┌────┬────┬────┬────┬────┬────┬────┬────┬────┬────┬────┬────┐
 // │  0 │  1 │  2 │  3 │  4 │  5 │  6 │  7 │  8 │  9 │ 10 │ 11 │
@@ -46,36 +47,6 @@
 // for bluetooth
 #define WIRELESS  8
 #define BT_SEL_QAZ  &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3
-
-// for encoder
-#define NEXT_APP kp LG(TAB)
-#define PREV_APP kp LS(LG(TAB))
-
-#define NEXT_TAB kp LC(TAB)
-#define PREV_TAB kp LS(LC(TAB))
-
-#define NEXT_HIST kp LG(RBKT)
-#define PREV_HIST kp LG(LBKT)
-
-#define ZOOM_IN kp LG(PLUS)
-#define ZOOM_OUT kp LG(MINUS)
-
-#define NEXT_SPACE_APP kp LC(LG(RIGHT))
-#define PREV_SPACE_APP kp LC(LG(LEFT))
-
-#define NEXT_SPACE kp LG(RIGHT)
-#define PREV_SPACE kp LG(LEFT)
-
-#define NEXT_MONITOR_APP kp LA(LC(LG(RIGHT)))
-
-#define ZOOM2_IN kp LA(LG(N6))
-#define ZOOM2_OUT kp LA(LG(MINUS))
-
-#define MAC_REDO kp LS(LG(Z))
-#define MAC_UNDO kp LG(Z)
-
-#define WIN_REDO kp LC(Y)
-#define WIN_UNDO kp LC(Z)
 
 // original macro
 
@@ -105,16 +76,10 @@
 #define JP_HANZEN       GRAVE             // Han/Zen
 #define JP_BSLH         INT1              // Backslash
 
-// Custom scroll values to ensure a single encoder click produces enough velocity
-
-#define SCRL_UP_FAST   MOVE_Y(35)
-#define SCRL_DOWN_FAST MOVE_Y(-35)
-#define SCRL_LEFT_FAST MOVE_X(-35)
-#define SCRL_RIGHT_FAST MOVE_X(35)
-
 &msc_input_listener {
     input-processors = <
         &zip_scroll_transform (INPUT_TRANSFORM_X_INVERT | INPUT_TRANSFORM_Y_INVERT)
+        &zip_scroll_scaler 1 2
         &zip_inertia
     >;
 
@@ -185,357 +150,10 @@
             hold-trigger-on-release;
         };
 
-        // for encoder on base layer
-        enc_base_root: encorder_base_root {
-            compatible = "zmk,behavior-sensor-rotate";
-            #sensor-binding-cells = <0>;
-            bindings = <&enc_base_cw>, <&enc_base_ccw>;
-
-            tap-ms = <50>;
-        };
-
-        enc_base_cw: encorder_base_cw {
-            compatible = "zmk,behavior-mod-morph";
-            #binding-cells = <0>;
-            bindings = <&msc SCRL_DOWN_FAST>, <&enc_base_all_modifiers_cw>;
-
-            mods = <(MOD_LSFT|MOD_LALT|MOD_LCTL|MOD_LGUI|MOD_RGUI)>;
-        };
-
-        enc_base_ccw: encorder_base_ccw {
-            compatible = "zmk,behavior-mod-morph";
-            #binding-cells = <0>;
-            bindings = <&msc SCRL_UP_FAST>, <&enc_base_all_modifiers_ccw>;
-
-            mods = <(MOD_LSFT|MOD_LALT|MOD_LCTL|MOD_LGUI|MOD_RGUI)>;
-        };
-
-        enc_base_all_modifiers_cw: encorder_base_all_modifiers_cw {
-            compatible = "zmk,behavior-mod-morph";
-            #binding-cells = <0>;
-            bindings = <&enc_base_left_all_modifiers_cw>, <&bl BL_INC>;
-
-            mods = <MOD_RGUI>;
-        };
-
-        enc_base_all_modifiers_ccw: encorder_base_all_modifiers_ccw {
-            compatible = "zmk,behavior-mod-morph";
-            #binding-cells = <0>;
-            bindings = <&enc_base_left_all_modifiers_ccw>, <&bl BL_DEC>;
-
-            mods = <MOD_RGUI>;
-        };
-
-        enc_base_left_all_modifiers_cw: encorder_base_left_all_modifiers_cw {
-            compatible = "zmk,behavior-mod-morph";
-            #binding-cells = <0>;
-            bindings = <&enc_base_shift_alt_ctrl_cw>, <&NEXT_APP>;
-
-            mods = <MOD_LGUI>;
-            // needs keep-mods to display app selector
-            keep-mods = <(MOD_LGUI)>;
-        };
-
-        enc_base_left_all_modifiers_ccw: encorder_base_left_all_modifiers_ccw {
-            compatible = "zmk,behavior-mod-morph";
-            #binding-cells = <0>;
-            bindings = <&enc_base_shift_alt_ctrl_ccw>, <&PREV_APP>;
-
-            mods = <MOD_LGUI>;
-            // needs keep-mods to display app selector
-            keep-mods = <(MOD_LGUI)>;
-        };
-
-        enc_base_shift_alt_ctrl_cw: encorder_base_shift_alt_ctrl_cw {
-            compatible = "zmk,behavior-mod-morph";
-            #binding-cells = <0>;
-            bindings = <&enc_base_shift_alt_cw>, <&NEXT_TAB>;
-
-            mods = <MOD_LCTL>;
-        };
-
-        enc_base_shift_alt_ctrl_ccw: encorder_base_shift_alt_ctrl_ccw {
-            compatible = "zmk,behavior-mod-morph";
-            #binding-cells = <0>;
-            bindings = <&enc_base_shift_alt_ccw>, <&PREV_TAB>;
-
-            mods = <MOD_LCTL>;
-        };
-
-        enc_base_shift_alt_cw: encorder_base_shift_alt_cw {
-            compatible = "zmk,behavior-mod-morph";
-            #binding-cells = <0>;
-            bindings = <&msc SCRL_LEFT_FAST>, <&NEXT_HIST>;
-
-            mods = <MOD_LALT>;
-        };
-
-        enc_base_shift_alt_ccw: encorder_base_shift_alt_ccw {
-            compatible = "zmk,behavior-mod-morph";
-            #binding-cells = <0>;
-            bindings = <&msc SCRL_RIGHT_FAST>, <&PREV_HIST>;
-
-            mods = <MOD_LALT>;
-        };
-
-        // for encoder on raise layer
-        enc_raise_root: encorder_raise_root {
-            compatible = "zmk,behavior-sensor-rotate";
-            #sensor-binding-cells = <0>;
-            bindings = <&enc_raise_cw>, <&enc_raise_ccw>;
-
-            tap-ms = <50>;
-        };
-
-        enc_raise_cw: encorder_raise_cw {
-            compatible = "zmk,behavior-mod-morph";
-            #binding-cells = <0>;
-            bindings = <&kp C_BRI_UP>, <&enc_raise_all_modifiers_cw>;
-
-            mods = <(MOD_LSFT|MOD_LALT|MOD_LCTL|MOD_LGUI)>;
-        };
-
-        enc_raise_ccw: encorder_raise_ccw {
-            compatible = "zmk,behavior-mod-morph";
-            #binding-cells = <0>;
-            bindings = <&kp C_BRI_DN>, <&enc_raise_all_modifiers_ccw>;
-
-            mods = <(MOD_LSFT|MOD_LALT|MOD_LCTL|MOD_LGUI)>;
-        };
-
-        enc_raise_all_modifiers_cw: encorder_raise_all_modifiers_cw {
-            compatible = "zmk,behavior-mod-morph";
-            #binding-cells = <0>;
-            bindings = <&enc_raise_shift_alt_ctrl_cw>, <&kp DOWN>;
-
-            mods = <MOD_LGUI>;
-        };
-
-        enc_raise_all_modifiers_ccw: encorder_raise_all_modifiers_ccw {
-            compatible = "zmk,behavior-mod-morph";
-            #binding-cells = <0>;
-            bindings = <&enc_raise_shift_alt_ctrl_ccw>, <&kp UP>;
-
-            mods = <MOD_LGUI>;
-        };
-
-        enc_raise_shift_alt_ctrl_cw: encorder_raise_shift_alt_ctrl_cw {
-            compatible = "zmk,behavior-mod-morph";
-            #binding-cells = <0>;
-            bindings = <&none>, <&kp RIGHT>;
-
-            mods = <MOD_LCTL>;
-            // needs keep-mods to select text
-            keep-mods = <(MOD_LSFT|MOD_LALT)>;
-        };
-
-        enc_raise_shift_alt_ctrl_ccw: encorder_raise_shift_alt_ctrl_ccw {
-            compatible = "zmk,behavior-mod-morph";
-            #binding-cells = <0>;
-            bindings = <&none>, <&kp LEFT>;
-
-            mods = <MOD_LCTL>;
-            // needs keep-mods to select text
-            keep-mods = <(MOD_LSFT|MOD_LALT)>;
-        };
-
-        // for encoder on lower layer
-        enc_lower_root: encorder_lower_root {
-            compatible = "zmk,behavior-sensor-rotate";
-            #sensor-binding-cells = <0>;
-            bindings = <&enc_lower_cw>, <&enc_lower_ccw>;
-
-            tap-ms = <50>;
-        };
-
-        enc_lower_cw: encorder_lower_cw {
-            compatible = "zmk,behavior-mod-morph";
-            #binding-cells = <0>;
-            bindings = <&ZOOM_IN>, <&enc_lower_all_modifiers_cw>;
-
-            mods = <(MOD_LSFT|MOD_LALT|MOD_LCTL|MOD_LGUI)>;
-        };
-
-        enc_lower_ccw: encorder_lower_ccw {
-            compatible = "zmk,behavior-mod-morph";
-            #binding-cells = <0>;
-            bindings = <&ZOOM_OUT>, <&enc_lower_all_modifiers_ccw>;
-
-            mods = <(MOD_LSFT|MOD_LALT|MOD_LCTL|MOD_LGUI)>;
-        };
-
-        enc_lower_all_modifiers_cw: encorder_lower_all_modifiers_cw {
-            compatible = "zmk,behavior-mod-morph";
-            #binding-cells = <0>;
-            bindings = <&enc_lower_shift_alt_ctrl_cw>, <&NEXT_SPACE_APP>;
-
-            mods = <MOD_LGUI>;
-        };
-
-        enc_lower_all_modifiers_ccw: encorder_lower_all_modifiers_ccw {
-            compatible = "zmk,behavior-mod-morph";
-            #binding-cells = <0>;
-            bindings = <&enc_lower_shift_alt_ctrl_ccw>, <&PREV_SPACE_APP>;
-
-            mods = <MOD_LGUI>;
-        };
-
-        enc_lower_shift_alt_ctrl_cw: encorder_lower_shift_alt_ctrl_cw {
-            compatible = "zmk,behavior-mod-morph";
-            #binding-cells = <0>;
-            bindings = <&enc_lower_shift_alt_cw>, <&NEXT_SPACE>;
-
-            mods = <MOD_LCTL>;
-        };
-
-        enc_lower_shift_alt_ctrl_ccw: encorder_lower_shift_alt_ctrl_ccw {
-            compatible = "zmk,behavior-mod-morph";
-            #binding-cells = <0>;
-            bindings = <&enc_lower_shift_alt_ccw>, <&PREV_SPACE>;
-
-            mods = <MOD_LCTL>;
-        };
-
-        enc_lower_shift_alt_cw: encorder_lower_shift_alt_cw {
-            compatible = "zmk,behavior-mod-morph";
-            #binding-cells = <0>;
-            bindings = <&ZOOM2_IN>, <&NEXT_MONITOR_APP>;
-
-            mods = <MOD_LALT>;
-        };
-
-        enc_lower_shift_alt_ccw: encorder_lower_shift_alt_ccw {
-            compatible = "zmk,behavior-mod-morph";
-            #binding-cells = <0>;
-            bindings = <&ZOOM2_OUT>, <&none>;
-
-            mods = <MOD_LALT>;
-        };
-
-        // for encoder on adjust layer
-        enc_adjust_root: encorder_adjust_root {
-            compatible = "zmk,behavior-sensor-rotate";
-            #sensor-binding-cells = <0>;
-            bindings = <&enc_adjust_cw>, <&enc_adjust_ccw>;
-
-            tap-ms = <50>;
-        };
-
-        enc_adjust_cw: encorder_adjust_cw {
-            compatible = "zmk,behavior-mod-morph";
-            #binding-cells = <0>;
-            bindings = <&kp C_VOL_UP>, <&enc_adjust_all_modifiers_cw>;
-
-            mods = <(MOD_LSFT|MOD_LALT|MOD_LCTL|MOD_LGUI)>;
-        };
-
-        enc_adjust_ccw: encorder_adjust_ccw {
-            compatible = "zmk,behavior-mod-morph";
-            #binding-cells = <0>;
-            bindings = <&kp C_VOL_DN>, <&enc_adjust_all_modifiers_ccw>;
-
-            mods = <(MOD_LSFT|MOD_LALT|MOD_LCTL|MOD_LGUI)>;
-        };
-
-        enc_adjust_all_modifiers_cw: encorder_adjust_all_modifiers_cw {
-            compatible = "zmk,behavior-mod-morph";
-            #binding-cells = <0>;
-            bindings = <&enc_adjust_shift_alt_ctrl_cw>, <&mmv MOVE_DOWN>;
-
-            mods = <MOD_LGUI>;
-        };
-
-        enc_adjust_all_modifiers_ccw: encorder_adjust_all_modifiers_ccw {
-            compatible = "zmk,behavior-mod-morph";
-            #binding-cells = <0>;
-            bindings = <&enc_adjust_shift_alt_ctrl_ccw>, <&mmv MOVE_UP>;
-
-            mods = <MOD_LGUI>;
-        };
-
-        enc_adjust_shift_alt_ctrl_cw: encorder_adjust_shift_alt_ctrl_cw {
-            compatible = "zmk,behavior-mod-morph";
-            #binding-cells = <0>;
-            bindings = <&enc_adjust_shift_alt_cw>, <&mmv MOVE_RIGHT>;
-
-            mods = <MOD_LCTL>;
-        };
-
-        enc_adjust_shift_alt_ctrl_ccw: encorder_adjust_shift_alt_ctrl_ccw {
-            compatible = "zmk,behavior-mod-morph";
-            #binding-cells = <0>;
-            bindings = <&enc_adjust_shift_alt_ccw>, <&mmv MOVE_LEFT>;
-
-            mods = <MOD_LCTL>;
-        };
-
-        enc_adjust_shift_alt_cw: encorder_adjust_shift_alt_cw {
-            compatible = "zmk,behavior-mod-morph";
-            #binding-cells = <0>;
-            bindings = <&MAC_REDO>, <&none>;
-
-            mods = <MOD_LALT>;
-        };
-
-        enc_adjust_shift_alt_ccw: encorder_adjust_shift_alt_ccw {
-            compatible = "zmk,behavior-mod-morph";
-            #binding-cells = <0>;
-            bindings = <&MAC_UNDO>, <&none>;
-
-            mods = <MOD_LALT>;
-        };
-
-        // original
-        encoder_scroll_v: encoder_scroll_v {
-            compatible = "zmk,behavior-sensor-rotate";
-            #sensor-binding-cells = <0>;
-            bindings = <&msc SCRL_DOWN_FAST>, <&msc SCRL_UP_FAST>;
-
-            tap-ms = <50>;
-        };
-
-        encoder_scroll_h: encoder_scroll_h {
-            compatible = "zmk,behavior-sensor-rotate";
-            #sensor-binding-cells = <0>;
-            bindings = <&msc SCRL_RIGHT_FAST>, <&msc SCRL_LEFT_FAST>;
-
-            tap-ms = <50>;
-        };
-
         encoder_backlight: encoder_backlight {
             compatible = "zmk,behavior-sensor-rotate";
             #sensor-binding-cells = <0>;
             bindings = <&bl BL_INC>, <&bl BL_DEC>;
-        };
-
-        encoder_arrow_v: encoder_arrow_v {
-            compatible = "zmk,behavior-sensor-rotate";
-            #sensor-binding-cells = <0>;
-            bindings = <&kp DOWN>, <&kp UP>;
-        };
-
-        encoder_arrow_h: encoder_arrow_h {
-            compatible = "zmk,behavior-sensor-rotate";
-            #sensor-binding-cells = <0>;
-            bindings = <&kp RIGHT>, <&kp LEFT>;
-        };
-
-        encoder_volume: encoder_volume {
-            compatible = "zmk,behavior-sensor-rotate";
-            #sensor-binding-cells = <0>;
-            bindings = <&kp C_VOL_UP>, <&kp C_VOL_DN>;
-        };
-
-        encoder_undo_win: encoder_undo_win {
-            compatible = "zmk,behavior-sensor-rotate";
-            #sensor-binding-cells = <0>;
-            bindings = <&kp LC(Y)>, <&kp LC(Z)>;
-        };
-
-        encoder_undo_mac: encoder_undo_mac {
-            compatible = "zmk,behavior-sensor-rotate";
-            #sensor-binding-cells = <0>;
-            bindings = <&kp LG(LS(Z))>, <&kp LG(Z)>;
         };
 
         mo2: mo2 {
@@ -679,7 +297,7 @@
             bindings = <
                 MAC_QAZ40_BASE_LEFT_TOP                 MAC_QAZ40_BASE_RIGHT_TOP
                 MAC_QAZ40_BASE_LEFT_MIDDLE              MAC_QAZ40_BASE_RIGHT_MIDDLE
-                MAC_QAZ40_BASE_LEFT_BOTTOM              MAC_QAZ40_BASE_RIGHT_BOTTOM
+                MAC_QAZ40_BASE_LEFT_BOTTOM              &mkp LCLK  MAC_QAZ_BASE_RIGHT_BOTTOM
                 &none  &none  MAC_QAZ_BASE_LEFT_THUMBS  MAC_QAZ_BASE_RIGHT_THUMBS  &none  &none
             >;
         };
@@ -726,7 +344,7 @@
             bindings = <
                 WIN_QAZ40_BASE_LEFT_TOP                 WIN_QAZ40_BASE_RIGHT_TOP
                 WIN_QAZ40_BASE_LEFT_MIDDLE              WIN_QAZ40_BASE_RIGHT_MIDDLE
-                WIN_QAZ40_BASE_LEFT_BOTTOM              WIN_QAZ40_BASE_RIGHT_BOTTOM
+                WIN_QAZ40_BASE_LEFT_BOTTOM              &mkp LCLK  WIN_QAZ_BASE_RIGHT_BOTTOM
                 &none  &none  WIN_QAZ_BASE_LEFT_THUMBS  WIN_QAZ_BASE_RIGHT_THUMBS  &none  &none
             >;
         };
