@@ -12,7 +12,7 @@
 #include <dt-bindings/zmk/keys.h>
 
 #define ZMK_POINTING_DEFAULT_MOVE_VAL 1500
-#define ZMK_POINTING_DEFAULT_SCRL_VAL 20
+#define ZMK_POINTING_DEFAULT_SCRL_VAL 50
 
 #include <dt-bindings/zmk/pointing.h>
 #include <input/processors.dtsi>
@@ -76,16 +76,10 @@
 #define JP_HANZEN       GRAVE             // Han/Zen
 #define JP_BSLH         INT1              // Backslash
 
-// Custom scroll values to ensure a single encoder click produces enough velocity
-
-#define SCRL_UP_FAST   MOVE_Y(35)
-#define SCRL_DOWN_FAST MOVE_Y(-35)
-#define SCRL_LEFT_FAST MOVE_X(-35)
-#define SCRL_RIGHT_FAST MOVE_X(35)
-
 &msc_input_listener {
     input-processors = <
         &zip_scroll_transform (INPUT_TRANSFORM_X_INVERT | INPUT_TRANSFORM_Y_INVERT)
+        &zip_scroll_scaler 1 2
         &zip_inertia
     >;
 
